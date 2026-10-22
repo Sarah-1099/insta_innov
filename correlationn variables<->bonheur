@@ -1,0 +1,71 @@
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- Étape 1 : chargement et contrôle ---
+SEED = 42
+np.random.seed(SEED)
+
+PATH = Path(__file__).parent / "instagram_users_lifestyleSafe.csv"
+TARGET = "self_reported_happiness"
+
+df = pd.read_csv(PATH)
+print(df.shape)
+print("manquants au total :", df.isna().sum().sum())
+print(df[TARGET].value_counts().sort_index())
+
+panel = df[df[TARGET].notna()].copy()
+print(f"{len(panel)} lignes sur {len(df)} ({len(panel)/len(df):.1%})")
+  l'étape 1 donne des informations sur le fichier: taill du jeu de données, valeurs manquantes, répartition des note, combien d'utilisateurs ont une note 
+  pour le bonheur
+
+# --- Étape 2 : trier les colonnes ---
+a_exclure = ["user_id", "app_name"]
+
+sante = ["perceived_stress_score", "sleep_hours_per_night", "body_mass_index",
+         "blood_pressure_systolic", "blood_pressure_diastolic"]
+
+usage = ["daily_active_minutes_instagram", "sessions_per_day", "posts_created_per_week",
+         "reels_watched_per_day", "stories_viewed_per_day", "likes_given_per_day",
+         "comments_written_per_day", "dms_sent_per_week", "dms_received_per_week",
+         "ads_viewed_per_day", "ads_clicked_per_day", "time_on_feed_per_day",
+         "time_on_explore_per_day", "time_on_messages_per_day", "time_on_reels_per_day",
+         "followers_count", "following_count", "average_session_length_minutes",
+         "notification_response_rate", "user_engagement_score"]
+
+for nom in a_exclure + sante + usage:
+    assert nom in panel.columns, f"Colonne introuvable : {nom}"
+
+autres = [c for c in panel.columns
+          if c not in a_exclure + sante + usage + [TARGET]]
+autres_num = panel[autres].select_dtypes("number").columns.tolist()
+autres_cat = panel[autres].select_dtypes(exclude="number").columns.tolist()
+
+print(len(usage), "colonnes d'usage,", len(sante), "de santé")
+print(len(autres_num), "autres numériques,", len(autres_cat), "autres catégorielles")
+print("catégorielles :", autres_cat)
+  les variables catégorielles sont pays, genre, reve,u, dernière connexion
+
+# --- Étape 3 : corrélation usage <-> bonheur ---
+r = panel["daily_active_minutes_instagram"].corr(panel[TARGET], method="spearman")
+print("Temps quotidien sur l'app vs bonheur :", round(r, 3))
+
+corr = panel[usage].corrwith(panel[TARGET], method="spearman").to_frame("rho")
+corr["abs_rho"] = corr["rho"].abs()
+corr = corr.sort_values("abs_rho", ascending=False)
+
+SEUIL = 0.05
+fortes = corr[corr["abs_rho"] >= SEUIL]
+
+print(corr.round(3))
+print(f"\n{len(fortes)} variables sur {len(corr)} ont |rho| >= {SEUIL}")
+
+corr["rho"].sort_values().plot.barh(figsize=(8, 7))
+plt.axvline(0, color="black", linewidth=0.8)
+plt.xlabel("Corrélation de Spearman avec le bonheur")
+plt.tight_layout()
+plt.show()
+le score de corrélation obtenu est négatif (-0,361): plus une variable augmente, plus le bonheur diminue. On établit un seuil significatif à 0,05 ce qui fait que 
+le nombre d'abonnés et de comptes suivis ne'ont pas une incidence significative sur le bonheur. Les valeurs qui dépassent le seuil en dessous de -0,361 auront une
+incidence moindre sur le bonheur.
