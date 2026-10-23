@@ -13,3 +13,8 @@ ENV/
 # Fichiers de configuration d'IDE (Optionnel)
 .vscode/
 .idea/
+
+# Données non utilisées par le notebook et fichiers temporaires
+data/*.xlsx
+~$*
+.ipynb_checkpoints/
