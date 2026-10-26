@@ -1,38 +1,52 @@
-# Rush 4 – Segmentation des utilisateurs d'Instagram (Insta Innov)
+# insta-innov
 
-Segmentation des utilisateurs fondée sur leur usage, lien entre usage et bien-être (stress, sommeil,
-bonheur), règle d'affectation d'un nouvel utilisateur, limites et protection des données.
+## Présentation du Projet
+Ce projet a été réalisé dans le cadre du **Rush 4 - User Segmentation** du Bootcamp Data. L'objectif, confié par le département de l'Innovation d'Instagram, est double :
+1. Analyser et mesurer scientifiquement l'impact de l'utilisation de l'application sur le bien-être des utilisateurs (stress, bonheur, sommeil).
+2. Construire une segmentation comportementale actionnable en production pour permettre aux équipes produit de concevoir des fonctionnalités adaptées à chaque profil.
 
-## Livrables
+---
 
-| Livrable | Emplacement |
-|---|---|
-| Notebook (s'exécute de haut en bas, résultats identiques à chaque exécution) | `rush4_segmentation.ipynb` |
-| Slides de soutenance (15 min) | à venir |
+## Répartition de l'Équipe et Responsabilités
+Conformément aux exigences du cahier des charges, voici la distribution des rôles et des responsabilités au sein du groupe :
 
-## Lancer le notebook
+* **[Sarah Mahjoub] :** 
+  * Responsable de l'analyse réglementaire et juridique complète (RGPD Union Européenne, lois UK et protection des mineurs) liée au croisement des données d'utilisation et de santé.
+  *  Pilotage, relecture et validation de l'intégralité du développement Python du Notebook (coordination du Feature Engineering, du K-Means et de l'Arbre de décision développés par le reste de l'équipe).
+* **[Sophie Tandé] :**
+  * Responsable de l'analyse réglementaire et juridique complète (RGPD Union Européenne, lois UK et protection des mineurs) liée au croisement des données d'utilisation et de santé.
+  * Pilotage, relecture et validation de l'intégralité du développement Python du Notebook (coordination du Feature Engineering, du K-Means et de l'Arbre de décision développés par le reste de l'équipe).
+  * Installation, configuration de l'environnement collaboratif Git pour l'équipe.
+* **[Emmannuelle Foutou]  :**
+  * Écriture du code Python pour le notebook.
+  * Rédaction des conclusions statistiques, interprétation des segments d'utilisateurs et documentation des limites du modèle dans le Notebook.
+* **[Léonie Degeraud] :**
+  * Écriture du code Python pour le notebook.
+  * Rédaction des conclusions statistiques, interprétation des segments d'utilisateurs et documentation des limites du modèle dans le Notebook.
+* **[Stève Christian Fanta] :**
+  * Écriture du code Python pour le notebook.
+  * Conception du support de présentation (PowerPoint) pour synthétiser les résultats et les recommandations stratégiques.
 
+---
+
+## Technologies et Bibliothèques utilisées
+
+Sous notre supervision, l'environnement de travail de l'équipe a été configuré avec la stack technique suivante :
+
+* **Gestion des données :** `pandas`, `numpy`
+* **Graphiques :** `matplotlib`
+* **Machine Learning & Modèles (`scikit-learn`) :**
+  * Clustering : `KMeans`
+  * Modèles prédictifs : `LogisticRegression`, `HistGradientBoostingClassifier`
+  * Préparation : `StandardScaler`, `train_test_split`, `make_pipeline`
+* **Évaluation du modèle :** `silhouette_score`, `adjusted_rand_score`, `cohen_kappa_score`, `roc_auc_score`
+* **Outils système :** `pathlib`, `json`, `time`, `warnings`
+
+### Installation rapide
+Pour lancer le projet sans erreur, exécutez simplement cette commande dans votre terminal :
+```bash
+pip install pandas numpy matplotlib scikit-learn
 ```
-python -m venv .venv
-.venv\Scripts\activate            (Windows)
-pip install -r requirements.txt
-jupyter notebook rush4_segmentation.ipynb      puis « Run All »
-```
 
-Les deux extraits doivent être dans `data/` :
-`instagram_usage_lifestyleSafe.csv` et `instagram_users_lifestyleSafe.csv`.
-
-## Règles du projet
-
-- Graine aléatoire fixée (`GRAINE = 42`) : deux exécutions donnent les mêmes résultats.
-- Confidentialité : aucune ligne d'utilisateur affichée, aucun groupe affiché de moins de 100 personnes.
-- Les segments n'utilisent que des colonnes d'usage, connues pour tous les utilisateurs ; le bien-être
-  ne sert qu'à les évaluer.
-
-## Répartition du travail
-
-| Binôme | Membres | Responsabilités |
-|---|---|---|
-| A – Données | Sarah, Sophie | Choix des données, exploration, notebook propre et reproductible |
-| B – Segmentation | Léonie, Emmy | Variables, segments, affectation d'un nouvel utilisateur |
-| C – Évaluation & conformité | Stève, Myriam | Critères, évaluation, limites, RGPD, slides |
+### Lancement
+Ouvrir le fichier `.ipynb` dans VS Code (avec l'environnement virtuel `.venv` activé) ou Google Colab et cliquer sur **Run All**.
